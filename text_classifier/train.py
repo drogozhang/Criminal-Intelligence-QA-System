@@ -26,10 +26,7 @@ def train_epoch(train_arguments, text_classifier):
     losses = []
     correct = 0
     for train_sample_index in range(len(train_arguments.train_sentences)):
-        # this_sentence_len = train_sentences[train_sample_index].shape[0]
-        # batch_size = 1  # default only 1 sentence in 1 batch
         input_x = Variable(t.Tensor(train_arguments.train_sentences[train_sample_index])).cuda()
-        #         print(type(input_x))
         result = text_classifier.forward(input_x)
         gt_cls = Variable(t.Tensor([train_arguments.train_labels[train_sample_index]]).long()).cuda()
         loss = text_classifier.calc_loss(result, gt_cls)
