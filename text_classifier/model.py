@@ -11,6 +11,7 @@ import torch.nn as nn
 class BiLSTMTextClassifier(nn.Module):
     def __init__(self, word_embedding_dim, hidden_nodes, classes_num):
         super(BiLSTMTextClassifier, self).__init__()
+        
         self.bilstm = nn.LSTM(word_embedding_dim, hidden_nodes, bidirectional=True)
         self.linear1 = nn.Linear(hidden_nodes * 2, hidden_nodes)
         self.linaer2 = nn.Linear(hidden_nodes, classes_num)
