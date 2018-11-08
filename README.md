@@ -2,5 +2,4 @@
 ### Using Neo4j for depolying sub graph in flask framework.
 ### BiLSTM model with one layer for problem analysing and classifing in Pytorch framework
 ### Author: Da Chen, DrogoZhang.
-### SunLin test
 
