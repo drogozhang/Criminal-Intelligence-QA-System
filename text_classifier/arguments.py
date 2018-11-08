@@ -9,12 +9,6 @@ import torch as t
 
 from text_classifier import config as cfg
 
-
-# class BaseAruguments:
-#     def __int__(self, classes_num):
-#         self.classes_num = classes_num
-#
-
 class TrainArguments(object):
     def __init__(self, classes_num=cfg.CLASSES_NUM, train_csv_path=cfg.TRAIN_CSV_PATH,
                  word_embedding_dim=cfg.WORD_EMBEDDING_DIM,
@@ -71,7 +65,7 @@ class TrainArguments(object):
         return
 
 
-class TestArguments(object):
+class TestArguments(object):  # todo
     def __init__(self, classes_num=cfg.CLASSES_NUM, train_csv_path=cfg.TRAIN_CSV_PATH,
                  word_embedding_dim=cfg.WORD_EMBEDDING_DIM,
                  word_vector_model_path=cfg.WORD_VECTOR_MODEL_PATH, ):  # todo to be filled about test arguments
