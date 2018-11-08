@@ -1,2 +1,4 @@
 # Criminal-intelligence-QA-system
-actually just little demo for advanced Java final project in 18-19 1 of Canghong Jin
+### Using Neo4j for depolying sub graph in flask frame work.
+### BiLSTM model with one layer for problem analysing and classifing in Pytorch framework
+### Author: Da Chen, DrogoZhang.
