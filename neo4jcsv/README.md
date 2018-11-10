@@ -1,4 +1,4 @@
-### Neo4j import files and related cypher
+# Neo4j import files and related cypher
 
 
 ## Note that files should keep in import folder of Neo4j.
