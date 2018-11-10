@@ -1,0 +1,69 @@
+# insert case nodes
+
+LOAD CSV WITH HEADERS  FROM "file:///cases.csv" AS line
+MERGE
+(p:Cases{case_id:toInteger(line.case_id),name:line.case_name,people_involved_num:toInteger(line.people_involved_num),min_birth:line.min_people_birth,min_age:toInteger(line.min_people_involved_age),court_name:line.court_name,year:toInteger(line.year), location:line.location})
+
+# insert crime nodes：
+LOAD CSV WITH HEADERS FROM 'file:///crime.csv' AS line
+MERGE (p:Crime {crime_id:toInteger(line.crime_id),name:line.crime_name})
+
+# insert drug nodes：  # 数据中有很多是float型的 我觉得还是存成float会比较好一些
+
+LOAD CSV WITH HEADERS  FROM "file:///drugs.csv" AS line
+MERGE (p:Drugs{drug_id:toInteger(line.drug_id),name:line.drug_name,drug_quantity:toFloat(line.drug_quantity),drug_amount:toFloat(line.drug_amount),
+drug_price:toFloat(line.drug_price),drug_unit:line.drug_unit})
+
+# insert penalty nodes：
+LOAD CSV WITH HEADERS  FROM "file:///penalty.csv" AS line
+MERGE (p:Penalty{penalty_id:toInteger(line.penalty_id),name:line.penalty_name,sentence:line.sentence,property_penalty_amount:toInteger(line.property_penalty_amount),
+property_penalty_type:line.property_penalty_type, sentence_years: toInteger(line.sentence_years)})
+
+
+# insertpeople nodes：
+LOAD CSV WITH HEADERS  FROM "file:///people.csv" AS line
+MERGE (p:People{person_id:toInteger(line.person_id),name:line.person_name})
+
+
+
+# case2crime:
+LOAD CSV WITH HEADERS FROM "file:///case2crime.csv" AS line
+match (from:Cases{case_id:toInteger(line.case_id)}),(to:Crime{crime_id:toInteger(line.crime_id)})
+merge (from)-[r:judge{case_id:toInteger(line.case_id),crime_id:toInteger(line.crime_id)}]->(to)
+
+# crime2case:
+LOAD CSV WITH HEADERS FROM "file:///case2crime.csv" AS line
+match (from:Crime{crime_id:toInteger(line.crime_id)}),(to:Cases{case_id:toInteger(line.case_id)})  
+merge (from)-[r:judged_by{crime_id:toInteger(line.crime_id),case_id:toInteger(line.case_id)}]->(to)
+
+# case2drug:
+LOAD CSV WITH HEADERS FROM "file:///case2drug.csv" AS line
+match (from:Cases{case_id:toInteger(line.case_id)}),(to:Drugs{drug_id:toInteger(line.drug_id)})
+merge (from)-[r:contain{case_id:toInteger(line.case_id),drug_id:toInteger(line.drug_id)}]->(to)
+
+# drug2case:
+LOAD CSV WITH HEADERS FROM "file:///case2drug.csv" AS line
+match (from:Drugs{drug_id:toInteger(line.drug_id)}),(to:Cases{case_id:toInteger(line.case_id)})
+merge (from)-[r:appear{drug_id:toInteger(line.drug_id),case_id:toInteger(line.case_id)}]->(to)
+
+# case2penalty:
+LOAD CSV WITH HEADERS FROM "file:///case2penalty.csv" AS line
+match (from:Penalty{penalty_id:toInteger(line.penalty_id)}),(to:Cases{case_id:toInteger(line.case_id)})
+merge (from)-[r:punished_by{penalty_id:toInteger(line.penalty_id),case_id:toInteger(line.case_id)}]->(to)
+
+# penalty2case:
+LOAD CSV WITH HEADERS FROM "file:///case2penalty.csv" AS line
+match (from:Cases{case_id:toInteger(line.case_id)}),(to:Penalty{penalty_id:toInteger(line.penalty_id)})
+merge (from)-[r:punishe{case_id:toInteger(line.case_id),penalty_id:toInteger(line.penalty_id)}]->(to)
+
+# case2people:
+LOAD CSV WITH HEADERS FROM "file:///case2people.csv" AS line
+match (from:Cases{case_id:toInteger(line.case_id)}),(to:People{person_id:toInteger(line.person_id)})
+merge (from)-[r:involve{case_id:toInteger(line.case_id),person_id:toInteger(line.person_id)}]->(to)
+
+# people2case:
+LOAD CSV WITH HEADERS FROM "file:///case2people.csv" AS line
+match (from:People{person_id:toInteger(line.person_id)}),(to:Cases{case_id:toInteger(line.case_id)})
+merge (from)-[r:involved_in{person_id:toInteger(line.person_id), case_id:toInteger(line.case_id)}]->(to)
+
+
