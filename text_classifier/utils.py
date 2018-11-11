@@ -10,7 +10,7 @@ import gensim
 from gensim.models import Word2Vec
 
 
-def sentence2matrix(str_ls, word_vector_model, empty_wv, key_word_ls, arguments):
+def sentence2matrix(str_ls, word_vector_model, empty_wv, key_word_ls, arguments, model):
     sentence_matrix = []
     catched_key_words = []
     for word in str_ls:
@@ -20,10 +20,9 @@ def sentence2matrix(str_ls, word_vector_model, empty_wv, key_word_ls, arguments)
         else:
             try:
                 sentence_matrix.append(word_vector_model[word].reshape(1, word_vector_model[word].size))
-                # sentence_matrix.append(word_vector_model.wv[word].reshape(1, word_vector_model.wv[word].size))
             except KeyError:
                 sentence_matrix.append(empty_wv)
-    if arguments.model and arguments.model != "LSTM":
+    if model != "LSTM":
         assert len(str_ls) < arguments.max_length
         for i in range(arguments.max_length - len(str_ls)):
             sentence_matrix.append(empty_wv)

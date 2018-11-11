@@ -23,7 +23,7 @@ jieba.load_userdict(jieba_userdict_path)
 empty_wv = np.zeros((1, cfg.WORD_EMBEDDING_DIM))
 
 
-def train_epoch(sentences, labels, text_classifier, train_flag=True, model="LSTM"):
+def train_epoch(sentences, labels, text_classifier, model="LSTM", train_flag=True):
     losses = []
     correct = 0
     for train_sample_index in range(len(sentences)):
@@ -46,14 +46,29 @@ def train_epoch(sentences, labels, text_classifier, train_flag=True, model="LSTM
     return np.mean(np.array(losses)), correct / len(sentences)
 
 
-def start_training(train_arguments):
-    if train_arguments.model == "LSTM":
-        text_classifier = BiLSTMTextClassifier(train_arguments.word_embedding_dim, train_arguments.hidden_nodes,
-                                               train_arguments.classes_num).cuda()
+def start_training(train_arguments, base):
+    print('===========================================')
+    if base:
+        if train_arguments.base_model == "LSTM":
+            text_classifier = BiLSTMTextClassifier(train_arguments.word_embedding_dim, train_arguments.hidden_nodes,
+                                                   train_arguments.base_classes_num).cuda()
+        else:
+            text_classifier = CNNTextClassifier(train_arguments.word_embedding_dim, train_arguments.base_classes_num,
+                                                train_arguments.feature_maps, train_arguments.kernal_length,
+                                                train_arguments.pooling_height, train_arguments.max_length).cuda()
+        print("Start Training Base Model: ", train_arguments.base_model)
     else:
-        text_classifier = CNNTextClassifier(train_arguments.word_embedding_dim, train_arguments.classes_num,
-                                            train_arguments.feature_maps, train_arguments.kernal_length,
-                                            train_arguments.pooling_height, train_arguments.max_length).cuda()
+        if train_arguments.advanced_model == "LSTM":
+            text_classifier = BiLSTMTextClassifier(train_arguments.word_embedding_dim, train_arguments.hidden_nodes,
+                                                   train_arguments.advanced_classes_num).cuda()
+
+        else:
+            text_classifier = CNNTextClassifier(train_arguments.word_embedding_dim,
+                                                train_arguments.advanced_classes_num,
+                                                train_arguments.feature_maps, train_arguments.kernal_length,
+                                                train_arguments.pooling_height, train_arguments.max_length).cuda()
+        print("Start Training Advanced Model: ", train_arguments.advanced_model)
+    print('===========================================')
     if train_arguments.prevent_overfitting_method == "L2 Penalty":
         text_classifier.optimizer = optim.Adam(text_classifier.parameters(), lr=train_arguments.learning_rate,
                                                weight_decay=train_arguments.weight_decay)
@@ -61,23 +76,22 @@ def start_training(train_arguments):
         text_classifier.optimizer = optim.Adam(text_classifier.parameters(), lr=train_arguments.learning_rate)
     min_loss = 1e5
     for epoch_index in range(train_arguments.max_epoch):
-        epoch_loss, accuracy = train_epoch(train_arguments.train_sentences, train_arguments.train_labels,
-                                           text_classifier, model=train_arguments.model)
+        if base:
+            train_sentences, train_labels = train_arguments.base_train_sentences, train_arguments.base_train_labels
+        else:
+            train_sentences, train_labels = train_arguments.advanced_train_sentences, train_arguments.advanced_train_labels
+        model = train_arguments.base_model if base else train_arguments.advanced_model
+        epoch_loss, accuracy = train_epoch(train_sentences, train_labels,
+                                           text_classifier, model)
         if epoch_index % 5 == 0:
             print("Epoch:   ", epoch_index + 1, "Epoch Loss:   ", epoch_loss, "Accuracy:   {}%".format(accuracy * 100))
-        if epoch_index % 10 == 0:
-            epoch_loss, accuracy = train_epoch(train_arguments.test_sentences, train_arguments.test_labels,
-                                               text_classifier, False, train_arguments.model)
-            print("\n\nIn test: \n\n")
-            print("Epoch:   ", epoch_index + 1, "Epoch Loss:   ", epoch_loss, "Accuracy:   {}%".format(accuracy * 100),
-                  "\n\n")
             if accuracy >= train_arguments.accuracy_th and epoch_loss < min_loss:
                 min_loss = epoch_loss
                 train_arguments.accuracy_th = accuracy
-                train_arguments.save_model(text_classifier, epoch_index + 1)
+                train_arguments.save_model(text_classifier, epoch_index + 1, base)
 
 
-def prepare_date(samples_path, word_vector_model, train_arguments):
+def prepare_date(samples_path, word_vector_model, train_arguments, model):
     key_word_ls = open(jieba_userdict_path, "r", encoding="utf-8").readlines()
     key_word_ls = [item.strip("\n") for item in key_word_ls]
     key_word_ls.append("xx")
@@ -94,25 +108,34 @@ def prepare_date(samples_path, word_vector_model, train_arguments):
         word_segmentation_ls = list(jieba.cut(original_sentence))
         cut_sentence_ls.append(word_segmentation_ls)
         sentence_matrix, _ = sentence2matrix(word_segmentation_ls, word_vector_model, empty_wv, key_word_ls,
-                                             train_arguments)
+                                             train_arguments, model)
         matrix_sentence_ls.append(sentence_matrix)
 
     return matrix_sentence_ls, labels
 
 
 def main():
-    max_epoch = 1000
-    prevent_overfitting_method = "None"
-    model = "LSTM"  # "CNN"
-    train_arguments = TrainArguments(model=model, max_epoch=max_epoch,
+    max_epoch = 150
+    prevent_overfitting_method = "L2 Penalty"
+    base_model = "LSTM"  # "CNN"
+    advanced_model = "LSTM"
+    stacked = True
+    train_arguments = TrainArguments(stacked, base_model=base_model, advanced_model=advanced_model,
+                                     max_epoch=max_epoch,
                                      prevent_overfitting_method=prevent_overfitting_method)
     train_arguments.show_arguments()
     word_vector_model = load_word_vector_model(train_arguments.word_vector_model_path)
-    train_arguments.train_sentences, train_arguments.train_labels = prepare_date(train_arguments.train_csv_path,
-                                                                                 word_vector_model, train_arguments)
-    train_arguments.test_sentences, train_arguments.test_labels = prepare_date(train_arguments.test_csv_path,
-                                                                               word_vector_model, train_arguments)
-    start_training(train_arguments)
+
+    train_arguments.base_train_sentences, train_arguments.base_train_labels = prepare_date(
+        train_arguments.train_base_csv_path,
+        word_vector_model, train_arguments, base_model)
+
+    train_arguments.advanced_train_sentences, train_arguments.advanced_train_labels = prepare_date(
+        train_arguments.train_advanced_csv_path,
+        word_vector_model, train_arguments, advanced_model)
+
+    start_training(train_arguments, True)   # train base
+    start_training(train_arguments, False)  # train advance
 
 
 if __name__ == '__main__':
