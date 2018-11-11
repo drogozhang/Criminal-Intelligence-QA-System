@@ -1,6 +1,6 @@
 # Criminal-intelligence-QA-system
-## Using Neo4j for depolying sub graph in flask framework.
-## BiLSTM model with one layer for problem analysing and classifing in Pytorch framework.
+### 1.Using Neo4j for depolying sub graph in flask framework.
+### 2.BiLSTM model with one layer for problem analysing and classifing in Pytorch framework.
 
 
 ### todo:
