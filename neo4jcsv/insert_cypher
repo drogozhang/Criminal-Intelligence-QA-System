@@ -54,7 +54,7 @@ merge (from)-[r:punished_by{penalty_id:toInteger(line.penalty_id),case_id:toInte
 # penalty2case:
 LOAD CSV WITH HEADERS FROM "file:///case2penalty.csv" AS line
 match (from:Cases{case_id:toInteger(line.case_id)}),(to:Penalty{penalty_id:toInteger(line.penalty_id)})
-merge (from)-[r:punishe{case_id:toInteger(line.case_id),penalty_id:toInteger(line.penalty_id)}]->(to)
+merge (from)-[r:punish{case_id:toInteger(line.case_id),penalty_id:toInteger(line.penalty_id)}]->(to)
 
 # case2people:
 LOAD CSV WITH HEADERS FROM "file:///case2people.csv" AS line
