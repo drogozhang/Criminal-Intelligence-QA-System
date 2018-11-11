@@ -1,0 +1,80 @@
+1:哪些案件与周爱美有关
+input: string = “’周爱美‘”
+output: 与周爱美有关的事件
+nodes:
+	Match (n:People{name: '周爱美'})-[:involved_in]->(end:Cases) return n
+	Match (n:People{name: '周爱美'})-[:involved_in]->(end:Cases) return end
+edges:
+	Match (n:People{name: '周爱美'})-[r:involved_in]->(end:Cases) return r
+
+2:2018年温州市龙湾区审理的案件数量
+input: String:“2018” ，Stirng:”‘温州市龙湾区’“
+output: 所有温州市龙湾区的案子 ，文本框的数字
+nodes:
+	Match (n:Cases{court_name: '温州市龙湾区',year: 2018})return n
+count:
+	Match (n:Cases{court_name: '温州市龙湾区',year: 2018})return count(n)
+
+3:温州市龙湾区出现了多少的冰毒
+input: Stirng:”‘温州市龙湾区’“ , "冰毒"
+output: 案子,连接的冰毒，甲基苯丙胺
+nodes:
+	Match (n:Cases{court_name: '温州市龙湾区'})-[:contain]->(end:Drugs{name:'冰毒'}) return n
+	Match (n:Cases{court_name: '温州市龙湾区'})-[:contain]->(end:Drugs{name:'甲基苯丙胺'}) return end
+edges：
+	Match (n:Cases{court_name: '温州市龙湾区'})-[r:contain]->(end:Drugs{name:'冰毒'}) return r
+	Match (n:Cases{court_name: '温州市龙湾区'})-[r:contain]->(end:Drugs{name:'甲基苯丙胺'}) return r
+count:
+	Match (end:Cases{court_name: '温州市龙湾区'})-[:contain]->(n:Drugs{name:'冰毒'}) return sum(n.drug_quantity)
+4:温州市龙湾区判决冰毒的平均价格
+input: Stirng:”‘温州市龙湾区’“ , "冰毒"
+output: 案子,连接的冰毒，甲基苯丙胺
+nodes:
+	Match (n:Cases{court_name: '温州市龙湾区'})-[:contain]->(end:Drugs{name:'冰毒'}) return n
+	Match (n:Cases{court_name: '温州市龙湾区'})-[:contain]->(end:Drugs{name:'甲基苯丙胺'}) return end
+edges：
+	Match (n:Cases{court_name: '温州市龙湾区'})-[r:contain]->(end:Drugs{name:'冰毒'}) return r
+	Match (n:Cases{court_name: '温州市龙湾区'})-[r:contain]->(end:Drugs{name:'甲基苯丙胺'}) return r
+count:
+	Match (end:Cases{court_name: '温州市龙湾区'})-[:contain]->(n:Drugs{name:'冰毒'}) where n.drug_unit="克" return avg(n.drug_price)
+	
+5:温州市龙湾区的青年犯案比例
+input: Stirng:”‘温州市龙湾区’“
+output : 存在青年人的案子
+nodes:
+	Match (n:Cases{court_name: '温州市龙湾区'}) where n.min_age >18 and n.min_age <25 return n
+edges：
+	{}
+count:
+	a = Match (n:Cases{court_name: '温州市龙湾区'}) where n.min_age >18 and n.min_age <25 return count(n)
+	b = Match (n:Cases{court_name: '温州市龙湾区'})  return count(n)
+	a/b
+6:温州市龙湾区团队犯罪的百分比
+input: Stirng:”‘温州市龙湾区’“
+output : 团队犯罪的案子
+nodes:
+	Match (n:Cases{court_name: '温州市龙湾区'}) where n.people_involved_num >2  return n
+edges：
+	{}
+count:
+	a = Match (n:Cases{court_name: '温州市龙湾区'}) where n.people_involved_num >2  return count(n)
+	b = Match (n:Cases{court_name: '温州市龙湾区'})  return count(n)
+	a/b
+7:温州市龙湾区的平均量刑
+input: Stirng:”‘温州市龙湾区’“
+output : 这个地区所有案子
+nodes:
+	Match (n:Cases{court_name: '温州市龙湾区'}) return n
+	Match (n:Penalty)-[:punished_by]->(end:Cases{court_name: '温州市龙湾区'}) return n
+edges：
+	Match (n:Penalty)-[r:punished_by]->(end:Cases{court_name: '温州市龙湾区'}) return r
+count:
+	Match (n:Penalty)-[:punished_by]->(end:Cases{court_name: '温州市龙湾区'}) return avg(n.sentence_years)
+	
+
+#attention
+	”count“ push into the json  that  is  for sum number or avg number and so on
+#todo 
+question 3&4 ：the units of drugs are different,we just Simple addition,If I have time, I will fix it.
+			   Both names can cause problems like sum problems and avg problems
+

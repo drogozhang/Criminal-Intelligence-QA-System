@@ -5,42 +5,70 @@
     <style type="text/css">
         /* cytoscape graph */
         #cy {
-            height: 300px;
-            width: 400px;
+            height: 500px;
+            width: 1000px;
             background-color: #f9f9f9;
         }
     </style>
     <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/cytoscape/2.3.16/cytoscape.min.js"></script>
     <script>
-        $(function(){
-            cytoscape({
-              container: document.getElementById('cy'),
-              style: [
-                { selector: 'node[label = "Person"]',
-                  css: {'background-color': '#6FB1FC', 'content': 'data(name)'}
-                },
-                { selector: 'node[label = "Movie"]',
-                  css: {'background-color': '#F5A45D', 'content': 'data(title)'}
-                },
-                { selector: 'edge',
-                  css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle'}
+        $(function () {
+            $.get('/graph', function (result) {
+
+                var style = [
+                    {selector: 'node[label = "Cases"]', css: {'background-color': '#d0413e','height': 60,'width' : 60,'content': 'data(name)'}},
+                    {selector: 'node[label = "Crime"]', css: {'background-color': '#F5A45D','height': 30,'width' : 30,'content': 'data(name)'}},
+                    {selector: 'node[label = "Drugs"]', css: {'background-color': '#6FB1FC','height': 30,'width' : 30,'content': 'data(name)'}},
+                    {selector: 'node[label = "Penalty"]', css: {'background-color': '#ccc','height': 30,'width' : 30,'content': 'data(name)'}},
+                    {selector: 'node[label = "People"]', css: {'background-color': '#316383','height': 50,'width' : 50,'content': 'data(name)'}},
+                    {selector: 'edge[relationship = "appear"]',css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
+                    {selector: 'edge[relationship = "contain"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
+                    {selector: 'edge[relationship = "involve"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
+                    {selector: 'edge[relationship = "involved_in"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 10,
+                            'target-arrow-color': '#475e60','line-style':'dashed','curve-style':'unbundled-bezier'}},
+                    {selector: 'edge[relationship = "judge"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
+                    {selector: 'edge[relationship = "judged_by"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
+                    {selector: 'edge[relationship = "punishe"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
+                    {selector: 'edge[relationship = "punished_by"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
+
+                ];
+                 if (JSON.stringify(result.elements)== "{\"edges\":[],\"nodes\":[]}"){
+                    alert("Unable to search results ");
                 }
-              ],
-              elements: {
-                nodes: [
-                  {data: {id: '172', name: 'Tom Cruise', label: 'Person'}},
-                  {data: {id: '183', title: 'Top Gun', label: 'Movie'}}
-                ],
-                edges: [{data: {source: '172', target: '183', relationship: 'Acted_In'}}]
-              },
-              layout: { name: 'grid'}
-            });
+                var cy = cytoscape({
+                    container: document.getElementById('cy'),
+                    style: style,
+                    layout: {name: 'cose', fit: false},
+                    elements: result.elements
+                });
+
+
+                var weight = cy.nodes().data();
+                console.log(cy.nodes()[0].data() + ' == ' + weight); // weight is the first ele's weight
+
+                cy.on('tap', 'node', {foo: 'bar'}, function (evt) {
+                    console.log(evt.data.foo); // 'bar'
+                    var node = evt.cyTarget;
+                    console.log('tapped ' + JSON.stringify(node.data()))
+                    alert(JSON.stringify(node.data()))
+                });
+
+            }, 'json');
         });
+
     </script>
+
 </head>
 <body>
-  <h1>Movie网络图</h1>
-    <div id="cy"></div>
+<h1>Movie网络图</h1>
+<input id="kw" name="wd" class="s_ipt" value="" maxlength="255" autocomplete="off">
+<input type="submit" id="su" value="搜索一下" class="bg s_btn">
+<div id="cy"></div>
+<form action="/search" method="get">
+    搜索:<input type="text" name="wd"><br>
+    <input type="submit" value="提交">
+</form>
+
 </body>
 </html>

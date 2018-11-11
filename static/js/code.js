@@ -4,7 +4,6 @@ $(function(){
       { selector: 'node[label = "Person"]', css: {'background-color': '#6FB1FC'}},
       { selector: 'node[label = "Movie"]', css: {'background-color': '#F5A45D'}}
     ];
-
     var cy = cytoscape({
       container: document.getElementById('cy'),
       style: style,
@@ -13,3 +12,4 @@ $(function(){
     });
   }, 'json');  
 });
+
