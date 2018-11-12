@@ -4,6 +4,12 @@
 #
 # On 2018-11-08
 
+import os
+
+current_path = os.path.abspath(__file__)
+father_path = os.path.abspath(os.path.dirname(current_path) + os.path.sep + ".")
+father_path += "/"
+
 ADVANCED_PROBLEM_TYPE = [
     "与人物相关的案件",
     "某年某法院审理的案件数量",
@@ -15,7 +21,7 @@ ADVANCED_PROBLEM_TYPE = [
 
 BASE_PROBLEM_TYPE = ["高级问题，我要好好推理，请稍等",
                      "智障问题，不会自己看结点吗？"]
-a = "insurance_wv_model"
+a = father_path + "insurance_wv_model"
 b = "C:/Users/DrogoKhal/MachineLearning/Paper/baidu_encyclopedia/baidu_encyclopedia"
 
 WORD_VECTOR_MODEL_PATH = a
