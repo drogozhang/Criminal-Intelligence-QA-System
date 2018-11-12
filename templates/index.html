@@ -1,17 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Learning Cytoscape.js</title>
     <style type="text/css">
         /* cytoscape graph */
         #cy {
-            height: 500px;
-            width: 1000px;
+            height: 800px;
+            width: 1500px;
             background-color: #f9f9f9;
+            border: 1px black solid;
+            margin: 0 auto;
         }
+        .cd{
+            width: 100%;
+            height: 800px;
+            {#border: 1px black solid;#}
+        }
+
+        .cdzz{
+            {#border: 1px black solid;#}
+            width: 80%;
+            margin: 0 auto;
+            height: 800px;
+        }
+        .xxx{
+            background-image: url("/static/pic/beijing.jpg");
+        }
+
     </style>
     <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/cytoscape/2.3.16/cytoscape.min.js"></script>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/global.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/bootstrap-grid.css" rel="stylesheet" type="text/css">
     <script>
         $(function () {
             $.get('/graph', function (result) {
@@ -60,15 +83,79 @@
     </script>
 
 </head>
-<body>
-<h1>Movie网络图</h1>
-<input id="kw" name="wd" class="s_ipt" value="" maxlength="255" autocomplete="off">
-<input type="submit" id="su" value="搜索一下" class="bg s_btn">
-<div id="cy"></div>
-<form action="/search" method="get">
-    搜索:<input type="text" name="wd"><br>
-    <input type="submit" value="提交">
-</form>
+<script>
+    function f() {
+        val keyword = document.getElementById("query_word");
+        console.log(keyword);
 
+        $.ajax({
+            url:"/",
+            data:{keyword:keyword},
+            success:function(result) {
+                //
+            },
+            error: function(result) {
+                //
+                console.log("error")
+
+            }
+        });
+
+
+
+    }
+</script>
+<body class="xxx">
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="jumbotron">
+				<h1>
+					Criminal-intelligence-QA-system
+				</h1>
+				<p>
+					    ● Using Neo4j for depolying sub graph in flask framework.</p>
+                  <p>   ● BiLSTM model with one layer for problem analysing and classifing in Pytorch framework.</p>
+                  <p>   ● Authors: DrogoZhang，Da Chen.
+				</p>
+				<p>
+					 <a class="btn btn-primary btn-large"  href="https://github.com/zk31601102/Criminal-intelligence-QA-system">Learn more</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+<nav class="navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://github.com/zk31601102/Criminal-intelligence-QA-system">QA 图谱</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-left" action="/search" method="post" onsubmit="return Check()" >
+                    <input type="hidden" name="csrfmiddlewaretoken" value="qHN3DdNuwk8EcsMKat2hZH8CHzHOK4SKOmOK4Kl6K7wPUknvQa5u2jejdXAFG4Oo">
+                    <div class="form" >
+                        <input type="text" width="500px"  name="query_word" id="query_word" value="输入你要问的问题" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '输入问题';}">
+                        <button type="submit" id="query" onsubmit="f()">搜&nbsp;索</button>
+                    </div>
+                </form>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+{#<div class="cd">#}
+{#    <div class="my-concept cdzz">#}
+{#            <div class="concept-title">Criminal-intelligence-QA-system</div>#}
+{#            <div class="concept-container">#}
+{#                <canvas id="viewport" width="895" height="728" class=""></canvas>#}
+{#                <div id="cy"></div>#}
+{#            </div>#}
+{#        </div>#}
+{#</div>#}
+ <div id="cy"></div>
 </body>
 </html>
