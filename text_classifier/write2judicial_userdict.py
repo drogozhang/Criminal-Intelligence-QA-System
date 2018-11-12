@@ -4,10 +4,15 @@
 #
 # On 2018-11-11
 
+import re
 
-write_file = open("judicial_userdict_11_11.txt", "a")
+write_file = open("judicial_userdict_11_11_backup.txt", "w", encoding="utf-8")
+read_all = open("judicial_userdict_11_11.txt", "r", encoding="utf-8").readlines()
 
-for year in range(1950, 2050):
-    write_file.write(str(year)+"\n")
+for index in range(len(read_all)):
+    read_all[index] = re.sub("\(201[4-8]\)", '', read_all[index])
+    read_all[index] = re.sub("（201[4-8]）", '', read_all[index])
+    read_all[index] = re.sub("〔201[4-8]〕", '', read_all[index])
 
-write_file.close()
+for item in read_all:
+    write_file.write(item)
