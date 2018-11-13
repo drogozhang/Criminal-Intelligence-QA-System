@@ -5,4 +5,4 @@
 
 ## Note that cypher should run in order.
 
-## Note id should be unique.
+## Note that all id should be unique.
