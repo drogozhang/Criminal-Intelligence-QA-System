@@ -3,7 +3,7 @@
 > 
 > - Flask, cytoscape.js for displaying sub graph.
 > 
-> - Pytorch Stacked BiLSTM model each with one layer for problem classifying and analysing.
+> - Pytorch Stacked BiLSTM model each with one layer for query classifying and analysing.
 > 
 > - Authors: Da Chen, Drogo Zhang.
 
@@ -19,12 +19,14 @@
 >
 > - [THULAC](https://github.com/thunlp/THULAC-Python)
 
+## Word Embedding Links
+> - [Chinese Word Vectors](https://github.com/Embedding/Chinese-Word-Vectors)
+
 ## Model Training
 ![Alt text](https://github.com/zk31601102/Criminal-Intelligence-QA-System/raw/master/imgs/Model%20Training.jpg)
 
-## Word Embedding Links:
-> - [Chinese Word Vectors](https://github.com/Embedding/Chinese-Word-Vectors)
-
+## Server Setting
+![Alt text](https://github.com/zk31601102/Criminal-Intelligence-QA-System/raw/master/imgs/server_flowchart.png)
 
 
 ## Show:
@@ -33,7 +35,7 @@
 ### Advanced Problem
  ![Alt text](https://github.com/zk31601102/Criminal-Intelligence-QA-System/raw/master/imgs/advanced_problem_display.png)
 
-## Reference:
+## Reference
 > - [CNN Text Classifier](https://www.aclweb.org/anthology/D14-1181)
 > - [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf)
 > - [BiLSTM](https://pdfs.semanticscholar.org/4b80/89bc9b49f84de43acc2eb8900035f7d492b2.pdf)
