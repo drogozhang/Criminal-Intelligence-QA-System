@@ -59,6 +59,8 @@ def predict(original_sentence):  # todo overwrite
         else:
             return False, predicted problem type, key words"""
     word_segmentation_ls = list(jieba.cut(original_sentence))
+    if len(word_segmentation_ls) == 1 and word_segmentation_ls[0] in key_word_ls:
+        return False, 1, word_segmentation_ls
     sentence_matrix, catched_key_words = sentence2matrix(word_segmentation_ls, word_vector_model, empty_wv, key_word_ls,
                                                          test_arguments, test_arguments.base_model)
     sentence_matrix = Variable(t.Tensor(sentence_matrix)).cuda()
@@ -70,12 +72,14 @@ def predict(original_sentence):  # todo overwrite
         print(test_arguments.base_problem_type[base_predict_result])
         advanced_predict_score = advanced_text_classifier.forward(sentence_matrix).data.cpu().numpy()
         advanced_predict_result = np.argmax(advanced_predict_score)
+        if "甲基苯丙胺" in catched_key_words:
+            catched_key_words[catched_key_words.index("甲基苯丙胺")] = "冰毒"
         return True, advanced_predict_result, catched_key_words
 
 
 def main():
     all_sentences = open("final_test.txt", "r").readlines()
-    all_sentences = [item.split(",")[0] for item in all_sentences]
+    all_sentences = [item.strip("\n") for item in all_sentences]
     for original_sentence in all_sentences:
         print("Original Sentence:  ", original_sentence)
         advanced_problem, predict_result, catched_key_words = predict(original_sentence)
@@ -83,8 +87,7 @@ def main():
             print("Problem type:  ", test_arguments.advanced_problem_type[predict_result])
         else:
             print("Problem type:  ", test_arguments.base_problem_type[predict_result])
-        if "甲基苯丙胺" in catched_key_words:
-            catched_key_words[catched_key_words.index("甲基苯丙胺")] = "冰毒"
+
         print("Catched Key Words:  ", catched_key_words, end="\n" * 2)
 
 
