@@ -12,39 +12,32 @@
             border: 1px black solid;
             margin: 0 auto;
         }
-        .cd{
-            width: 100%;
-            height: 800px;
-            {#border: 1px black solid;#}
+        .xxx{
+            background-image: url("/static/pic/2.jpg");
+            background-size: 100%;
         }
 
-        .cdzz{
-            {#border: 1px black solid;#}
-            width: 80%;
-            margin: 0 auto;
-            height: 800px;
-        }
-        .xxx{
-            background-image: url("/static/pic/beijing.jpg");
-        }
 
     </style>
     <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/cytoscape/2.3.16/cytoscape.min.js"></script>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
-    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrp.min1.css" rel="stylesheet">
     <link href="/static/css/global.css" rel="stylesheet" type="text/css">
     <link href="/static/css/bootstrap-grid.css" rel="stylesheet" type="text/css">
     <script>
         $(function () {
-            $.get('/graph', function (result) {
+                {#$.get({{ result }}, function (result) {#}
 
+            $.get('/graph/{{ search_sentence }}', function (result) {
+            {#$.get('/graph', function (result) {#}
+                    console.log("I am in handle result function")
                 var style = [
                     {selector: 'node[label = "Cases"]', css: {'background-color': '#d0413e','height': 60,'width' : 60,'content': 'data(name)'}},
                     {selector: 'node[label = "Crime"]', css: {'background-color': '#F5A45D','height': 30,'width' : 30,'content': 'data(name)'}},
                     {selector: 'node[label = "Drugs"]', css: {'background-color': '#6FB1FC','height': 30,'width' : 30,'content': 'data(name)'}},
                     {selector: 'node[label = "Penalty"]', css: {'background-color': '#ccc','height': 30,'width' : 30,'content': 'data(name)'}},
-                    {selector: 'node[label = "People"]', css: {'background-color': '#316383','height': 50,'width' : 50,'content': 'data(name)'}},
+                    {selector: 'node[label = "People"]', css: {'background-color': '#316383','height': 30,'width' : 30,'content': 'data(name)'}},
                     {selector: 'edge[relationship = "appear"]',css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
                     {selector: 'edge[relationship = "contain"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
                     {selector: 'edge[relationship = "involve"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
@@ -52,9 +45,8 @@
                             'target-arrow-color': '#475e60','line-style':'dashed','curve-style':'unbundled-bezier'}},
                     {selector: 'edge[relationship = "judge"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
                     {selector: 'edge[relationship = "judged_by"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
-                    {selector: 'edge[relationship = "punishe"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
+                    {selector: 'edge[relationship = "punish"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
                     {selector: 'edge[relationship = "punished_by"]', css: {'content': 'data(relationship)', 'target-arrow-shape': 'triangle','width': 3}},
-
                 ];
                  if (JSON.stringify(result.elements)== "{\"edges\":[],\"nodes\":[]}"){
                     alert("Unable to search results ");
@@ -65,11 +57,6 @@
                     layout: {name: 'cose', fit: false},
                     elements: result.elements
                 });
-
-
-                var weight = cy.nodes().data();
-                console.log(cy.nodes()[0].data() + ' == ' + weight); // weight is the first ele's weight
-
                 cy.on('tap', 'node', {foo: 'bar'}, function (evt) {
                     console.log(evt.data.foo); // 'bar'
                     var node = evt.cyTarget;
@@ -77,34 +64,18 @@
                     alert(JSON.stringify(node.data()))
                 });
 
+                var ss = document.getElementById("query_word2")
+                ss.value = JSON.stringify(result.elements.count)
+
+
             }, 'json');
         });
+
+
 
     </script>
 
 </head>
-<script>
-    function f() {
-        val keyword = document.getElementById("query_word");
-        console.log(keyword);
-
-        $.ajax({
-            url:"/",
-            data:{keyword:keyword},
-            success:function(result) {
-                //
-            },
-            error: function(result) {
-                //
-                console.log("error")
-
-            }
-        });
-
-
-
-    }
-</script>
 <body class="xxx">
 <div class="container">
 	<div class="row clearfix">
@@ -137,25 +108,19 @@
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-left" action="/search" method="post" onsubmit="return Check()" >
+                <form class="navbar-left" action="/mockservice" method="get" >
                     <input type="hidden" name="csrfmiddlewaretoken" value="qHN3DdNuwk8EcsMKat2hZH8CHzHOK4SKOmOK4Kl6K7wPUknvQa5u2jejdXAFG4Oo">
                     <div class="form" >
                         <input type="text" width="500px"  name="query_word" id="query_word" value="输入你要问的问题" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '输入问题';}">
-                        <button type="submit" id="query" onsubmit="f()">搜&nbsp;索</button>
+                        <button type="submit" id="query" >搜&nbsp;索</button>
+                        <input type="text" width="500px"  name="query_word2" id="query_word2" value="Number =  0" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = {};}">
                     </div>
                 </form>
         </div><!-- /.navbar-collapse -->
+
     </div><!-- /.container-fluid -->
 </nav>
-{#<div class="cd">#}
-{#    <div class="my-concept cdzz">#}
-{#            <div class="concept-title">Criminal-intelligence-QA-system</div>#}
-{#            <div class="concept-container">#}
-{#                <canvas id="viewport" width="895" height="728" class=""></canvas>#}
-{#                <div id="cy"></div>#}
-{#            </div>#}
-{#        </div>#}
-{#</div>#}
+
  <div id="cy"></div>
 </body>
 </html>

@@ -31,6 +31,7 @@ body {
     background-color: #3399FF;
 }
 
+
 .navbar {
     padding-left: 41rem;
     padding-top: 2rem;
@@ -108,8 +109,8 @@ body {
 
 .form {
     margin: 0;
-    width: 120%;
-    height: 42px;
+    width: 1500px;
+    height: 60px;
     padding: 20px;
     border: none;
     border-radius: 5px;
@@ -123,7 +124,7 @@ body {
 }
 
 .navbar-left .form input {
-    width: 50%;
+    width: 20%;
     min-width: 300px;
 }
 
