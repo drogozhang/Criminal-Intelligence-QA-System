@@ -84,7 +84,7 @@ def buildEdges(relationRecord):
         data = {"target": re.findall(r":(.[0-9]*),", a)[0],
                 "source": re.findall(r":(.[0-9]*)}", a)[0],
                 "relationship": re.findall(r":(.+?) ", a)[0]}
-    elif re.findall(r":(.+?) ", a)[0] == "punishe":
+    elif re.findall(r":(.+?) ", a)[0] == "punish":
         data = {"target": re.findall(r":(.[0-9]*),", a)[0],
                 "source": re.findall(r":(.[0-9]*)}", a)[0],
                 "relationship": re.findall(r":(.+?) ", a)[0]}
@@ -142,7 +142,7 @@ def get_graph(search_sentence):
                 graph.run(
                     "Match (n:People{name: " + str(person_name) + "})-[:involved_in]->(end:Cases) return end").data())))
             nodes = people_nodes + case_nodes
-            count = str("'count(n)': 0")
+            count = 0
             edges = list(map(buildEdges, list(
                 graph.run(
                     "Match (n:People{name: " + str(person_name) + "})-[r:involved_in]->(end:Cases) return r").data())))
@@ -159,7 +159,7 @@ def get_graph(search_sentence):
             edges = {}
             count = str(
                 graph.run("Match (n:Cases{court_name: " + court_name + ",year: " + year + "})return count(n)").data()[
-                    0])
+                    0]['count(n)'])
             return jsonify(elements={"nodes": nodes, "edges": edges, "count": count})
         if problem_type == 2:
             if len(keyword_ls) != 2:
@@ -171,7 +171,7 @@ def get_graph(search_sentence):
                 "Match (n:Cases{court_name: " + court_name + "})-[:contain]->(end:Drugs{name:" + drugs_name + "}) return end").data())))
             edges = list(map(buildEdges, list(graph.run(
                 "Match (n:Cases{court_name: " + court_name + "})-[r:contain]->(end:Drugs{name:" + drugs_name + "}) return r").data())))
-            quantity_count = graph.run(  # bug here
+            quantity_count = graph.run(
                 "Match (end:Cases{court_name: " + court_name + "})-[:contain]->(n:Drugs{name:" + drugs_name + "}) return sum(n.drug_quantity)").data()[
                 0]['sum(n.drug_quantity)']
 
@@ -203,7 +203,7 @@ def get_graph(search_sentence):
             edges = edges1
             price_count = graph.run(
                 "Match (end:Cases{court_name: " + court_name + "})-[:contain]->(n:Drugs{name:" + drugs_name + "}) where n.drug_unit=\"克\" return avg(n.drug_price)").data()[
-                0]
+                0]['avg(n.drug_price)']
             if drugs_name == '"冰毒"':
                 case_nodes_2 = list(map(buildNodes, list(graph.run(
                     "Match (n:Cases{court_name: " + court_name + "})-[:contain]->(end:Drugs{name:'甲基苯丙胺'}) return n").data())))
@@ -246,7 +246,7 @@ def get_graph(search_sentence):
                 "Match (n:Cases{court_name: " + court_name + "}) where n.people_involved_num >2 return count(n)").data()))
             all_crime_num = str((graph.run(
                 "Match (n:Cases{court_name: " + court_name + "}) return count(n)").data()))
-            count = "Proportion(n) = " + str(re.findall(r"\d+\.?\d*", team_crime_num)) + "/" + str(
+            count = str(re.findall(r"\d+\.?\d*", team_crime_num)) + "/" + str(
                 re.findall(r"\d+\.?\d*", all_crime_num))
             return jsonify(elements={"nodes": nodes, "edges": edges, "count": count})
         if problem_type == 6:
@@ -262,23 +262,40 @@ def get_graph(search_sentence):
                 "Match (n:Penalty)-[r:punished_by]->(end:Cases{court_name: " + court_name + "}) return r").data())))
             b = str(graph.run(
                 "Match (n:Penalty)-[:punished_by]->(end:Cases{court_name: " + court_name + "}) return avg(n.sentence_years)").data()[
-                        0])
-            count = "avg = " + b + "年"
+                        0]['avg(n.sentence_years)'])
+            count = b + "年"
             print(count)
             return jsonify(elements={"nodes": nodes, "edges": edges, "count": count})
     else:
         if len(keyword_ls) != 1:
             raise KeyError("Key words number for search is wrong!")
-        # get_base_graph()
-        # todo
+        return get_base_graph(keyword_ls[0])
 
 
-# @app.route('/search')
-# def search():
-#     # 获取提出的问题
-#     keyword = request.args.get("query_word")
-#     print(keyword)
-#     return keyword
+def get_base_graph(key_word):
+    case_name = key_word
+    nodes1 = list(map(buildNodes, list(graph.run(
+        "MATCH (n:Cases) where n.name=~ '.*" + case_name + ".*' RETURN n").data())))
+    nodes2 = list(map(buildNodes, list(graph.run(
+        "Match (end:Cases)-[:involve]->(n:People) where end.name=~ '.*" + case_name + ".*'  return n").data())))
+    nodes3 = list(map(buildNodes, list(graph.run(
+        "Match (end:Cases)-[:contain]->(n:Drugs) where end.name=~ '.*" + case_name + ".*'  return n").data())))
+    nodes4 = list(map(buildNodes, list(graph.run(
+        "Match (end:Cases)-[:punish]->(n:Penalty) where end.name=~ '.*" + case_name + ".*'  return n").data())))
+    nodes5 = list(map(buildNodes, list(graph.run(
+        "Match (end:Cases)-[:judge]->(n:Crime) where end.name=~ '.*" + case_name + ".*'  return n").data())))
+    nodes = nodes1 + nodes2 + nodes3 + nodes4 + nodes5
+    edgs1 = list(map(buildEdges, list(graph.run(
+        "Match (end:Cases)-[r:involve]->(n:People) where end.name=~ '.*" + case_name + ".*'  return r").data())))
+    edgs2 = list(map(buildEdges, list(graph.run(
+        "Match (end:Cases)-[r:contain]->(n:Drugs) where end.name=~ '.*" + case_name + ".*'  return r").data())))
+    edgs3 = list(map(buildEdges, list(graph.run(
+        "Match (end:Cases)-[r:punish]->(n:Penalty) where end.name=~ '.*" + case_name + ".*'  return r").data())))
+    edgs4 = list(map(buildEdges, list(graph.run(
+        "Match (end:Cases)-[r:judge]->(n:Crime) where end.name=~ '.*" + case_name + ".*'  return r").data())))
+    edges = edgs1 + edgs2 + edgs3 + edgs4
+    count = {}
+    return jsonify(elements={"nodes": nodes, "edges": edges, "count": count})
 
 
 @app.route("/mockservice")
