@@ -84,7 +84,7 @@ def buildEdges(relationRecord):
         data = {"target": re.findall(r":(.[0-9]*),", a)[0],
                 "source": re.findall(r":(.[0-9]*)}", a)[0],
                 "relationship": re.findall(r":(.+?) ", a)[0]}
-    elif re.findall(r":(.+?) ", a)[0] == "punishe":
+    elif re.findall(r":(.+?) ", a)[0] == "punish":
         data = {"target": re.findall(r":(.[0-9]*),", a)[0],
                 "source": re.findall(r":(.[0-9]*)}", a)[0],
                 "relationship": re.findall(r":(.+?) ", a)[0]}
@@ -269,16 +269,33 @@ def get_graph(search_sentence):
     else:
         if len(keyword_ls) != 1:
             raise KeyError("Key words number for search is wrong!")
-        # get_base_graph()
-        # todo
+        return get_base_graph(keyword_ls[0])
 
 
-# @app.route('/search')
-# def search():
-#     # 获取提出的问题
-#     keyword = request.args.get("query_word")
-#     print(keyword)
-#     return keyword
+def get_base_graph(key_word):
+    case_name = key_word
+    nodes1 = list(map(buildNodes, list(graph.run(
+        "MATCH (n:Cases) where n.name=~ '.*" + case_name + ".*' RETURN n").data())))
+    nodes2 = list(map(buildNodes, list(graph.run(
+        "Match (end:Cases)-[:involve]->(n:People) where end.name=~ '.*" + case_name + ".*'  return n").data())))
+    nodes3 = list(map(buildNodes, list(graph.run(
+        "Match (end:Cases)-[:contain]->(n:Drugs) where end.name=~ '.*" + case_name + ".*'  return n").data())))
+    nodes4 = list(map(buildNodes, list(graph.run(
+        "Match (end:Cases)-[:punish]->(n:Penalty) where end.name=~ '.*" + case_name + ".*'  return n").data())))
+    nodes5 = list(map(buildNodes, list(graph.run(
+        "Match (end:Cases)-[:judge]->(n:Crime) where end.name=~ '.*" + case_name + ".*'  return n").data())))
+    nodes = nodes1 + nodes2 + nodes3 + nodes4 + nodes5
+    edgs1 = list(map(buildEdges, list(graph.run(
+        "Match (end:Cases)-[r:involve]->(n:People) where end.name=~ '.*" + case_name + ".*'  return r").data())))
+    edgs2 = list(map(buildEdges, list(graph.run(
+        "Match (end:Cases)-[r:contain]->(n:Drugs) where end.name=~ '.*" + case_name + ".*'  return r").data())))
+    edgs3 = list(map(buildEdges, list(graph.run(
+        "Match (end:Cases)-[r:punish]->(n:Penalty) where end.name=~ '.*" + case_name + ".*'  return r").data())))
+    edgs4 = list(map(buildEdges, list(graph.run(
+        "Match (end:Cases)-[r:judge]->(n:Crime) where end.name=~ '.*" + case_name + ".*'  return r").data())))
+    edges = edgs1 + edgs2 + edgs3 + edgs4
+    count = {}
+    return jsonify(elements={"nodes": nodes, "edges": edges, "count": count})
 
 
 @app.route("/mockservice")
