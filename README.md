@@ -3,7 +3,7 @@
 > 
 > - Flask, cytoscape.js for displaying sub graph.
 > 
-> - Pytorch Stacked BiLSTM model each with one layer for problem analysing and classifing.
+> - Pytorch Stacked BiLSTM model each with one layer for problem analysing and classifying.
 > 
 > - Authors: Da Chen, Drogo Zhang.
 
