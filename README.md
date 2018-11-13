@@ -13,11 +13,15 @@
 
 > - [Jieba](https://github.com/fxsjy/jieba)
 > 
-
+> - [NLPIR](https://github.com/NLPIR-team/NLPIR)
+>
+> - [SnowNLP](https://github.com/isnowfy/snownlp)
+>
+> - [THULAC](https://github.com/thunlp/THULAC-Python)
 
 ## Model Training
 ![Alt text](https://github.com/zk31601102/Criminal-Intelligence-QA-System/raw/master/imgs/Model%20Training.jpg)
 
 ## Word Embedding Links:
-> - [Chinese Embedding Vectors](https://github.com/Embedding/Chinese-Word-Vectors)
+> - [Chinese Word Vectors](https://github.com/Embedding/Chinese-Word-Vectors)
 
