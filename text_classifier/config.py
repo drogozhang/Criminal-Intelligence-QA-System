@@ -21,12 +21,14 @@ ADVANCED_PROBLEM_TYPE = [
 
 BASE_PROBLEM_TYPE = ["高级问题，我要好好推理，请稍等",
                      "智障问题，不会自己看结点吗？"]
+# self train word vector
 a = father_path + "insurance_wv_model"
+# self download baidu word vector
 b = "C:/Users/DrogoKhal/MachineLearning/Paper/baidu_encyclopedia/baidu_encyclopedia"
 
 WORD_VECTOR_MODEL_PATH = a
 
-TRAIN_BASE_CSV_PATH = "11-12_base_advanced_problems_train_samples_14classes.csv"
+TRAIN_BASE_CSV_PATH = "11-12_base_problems_train_samples_14classes.csv"
 TRAIN_ADVANCED_CSV_PATH = "11-12_advanced_problem_train_samples_7classes.csv"
 
 TEST_ADVANCED_CSV_PATH = "11-12_advanced_problem_train_samples_7classes.csv"  # "test_samples_7_labels.csv"

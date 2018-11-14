@@ -26,7 +26,7 @@ b = "C:/Users/DrogoKhal/MachineLearning/Paper/baidu_encyclopedia/baidu_encyclope
 
 WORD_VECTOR_MODEL_PATH = a
 
-TRAIN_BASE_CSV_PATH = "text_classifier/11-12_base_advanced_problems_train_samples_14classes.csv"
+TRAIN_BASE_CSV_PATH = "text_classifier/11-12_base_problems_train_samples_14classes.csv"
 TRAIN_ADVANCED_CSV_PATH = "text_classifier/11-12_advanced_problem_train_samples_7classes.csv"
 
 TEST_ADVANCED_CSV_PATH = "text_classifier/11-12_advanced_problem_train_samples_7classes.csv"  # "test_samples_7_labels.csv"
