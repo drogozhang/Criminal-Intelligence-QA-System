@@ -40,6 +40,7 @@
  ![Alt text](https://github.com/zk31601102/Criminal-Intelligence-QA-System/raw/master/imgs/advanced_problem_display.png)
 
 ## Reference
+> - [Word2Vec](https://papers.nips.cc/paper/5021-distributed-representations-of-words-and-phrases-and-their-compositionality.pdf)
 > - [CNN Text Classifier](https://www.aclweb.org/anthology/D14-1181)
 > - [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf)
 > - [BiLSTM](https://pdfs.semanticscholar.org/4b80/89bc9b49f84de43acc2eb8900035f7d492b2.pdf)
