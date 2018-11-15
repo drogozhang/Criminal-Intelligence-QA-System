@@ -27,7 +27,7 @@
 > - [Chinese Word Vectors](https://github.com/Embedding/Chinese-Word-Vectors)
 
 ## Model Training
-![Alt text](https://github.com/zk31601102/Criminal-Intelligence-QA-System/raw/master/imgs/Model%20Training.jpg)
+![Alt text](https://github.com/zk31601102/Criminal-Intelligence-QA-System/raw/master/imgs/Model%20Training.png)
 
 ## Server Setting
 ![Alt text](https://github.com/zk31601102/Criminal-Intelligence-QA-System/raw/master/imgs/server_flowchart.png)
