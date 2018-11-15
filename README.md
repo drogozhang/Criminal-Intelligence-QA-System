@@ -1,3 +1,6 @@
+### Tips: you can put question on issues.
+
+### Test natural language query in [Query](https://github.com/zk31601102/Criminal-Intelligence-QA-System/blob/master/text_classifier/final_test.txt)
 # Criminal Intelligence Q&A System
 > - Neo4j for storage.
 > 
@@ -41,5 +44,3 @@
 > - [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf)
 > - [BiLSTM](https://pdfs.semanticscholar.org/4b80/89bc9b49f84de43acc2eb8900035f7d492b2.pdf)
 
-
-### Tips: you can put question on issues.
